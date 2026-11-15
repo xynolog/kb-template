@@ -1,0 +1,38 @@
+apiVersion: xynolog.org/v1alpha1
+kind: Inference
+metadata:
+  name: anthropic
+spec:
+  providers:
+    anthropic:
+      baseURL: https://api.anthropic.com
+      apiKey:
+        fromEnv: ANTHROPIC_API_KEY
+  engines:
+    actors:
+      gatherer:
+        model: claude-sonnet-5-5
+        provider: anthropic
+      matcher:
+        model: claude-sonnet-5-5
+        provider: anthropic
+    jobs:
+      mark:
+        assessing:
+          model: claude-sonnet-5-5
+          provider: anthropic
+        commenting:
+          model: claude-sonnet-5-5
+          provider: anthropic
+        highlighting:
+          model: claude-sonnet-5-5
+          provider: anthropic
+        linking:
+          model: claude-sonnet-5-5
+          provider: anthropic
+        tagging:
+          model: claude-sonnet-5-5
+          provider: anthropic
+      yield:
+        model: claude-sonnet-5-5
+        provider: anthropic

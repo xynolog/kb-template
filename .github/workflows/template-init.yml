@@ -1,0 +1,42 @@
+# Runs once, in a repository made from xynolog/kb-template: gives the new
+# knowledge base its own identity, the one `xynolog init` derives from a git
+# origin (<owner_lc>.github.io:<repo>), and then deletes itself.
+name: Template init
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  init:
+    if: github.repository != 'xynolog/kb-template'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Name the knowledge base for this repository
+        env:
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+        run: |
+          domain="$(printf '%s' "$OWNER" | tr '[:upper:]' '[:lower:]').github.io:$REPO"
+          sed -i \
+            -e "s|^  name: \".*\"\$|  name: \"$REPO\"|" \
+            -e "s|^  domain: \".*\"\$|  domain: \"$domain\"|" \
+            -e "s|^  siteName: \".*\"\$|  siteName: \"$REPO\"|" \
+            .xynolog/config.yaml
+          sed -i -e "0,/\"name\": \"[^\"]*\"/s//\"name\": \"$REPO\"/" .devcontainer/devcontainer.json
+          grep -q "domain: \"$domain\"" .xynolog/config.yaml
+          grep -q "\"name\": \"$REPO\"" .devcontainer/devcontainer.json
+
+      - name: Commit, without this workflow
+        run: |
+          git rm -q .github/workflows/template-init.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .xynolog/config.yaml .devcontainer/devcontainer.json
+          git commit -q -m "Name this knowledge base ${{ github.repository }}"
+          git push
