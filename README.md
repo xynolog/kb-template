@@ -9,7 +9,8 @@ A knowledge base with nothing in it yet, ready to run with the
   `.github/workflows/template-init.yml`, which names the new knowledge base
   for its repository (`<owner>.github.io:<repo>`, the identity `xynolog init`
   derives from a git origin) and then deletes itself. Clone the new
-  repository and run `xynolog start`.
+  repository and run `xynolog start --config anthropic`; later starts use
+  the config the last one did.
 - **From the launcher:** `xynolog init --from-template` copies this
   repository's `.xynolog/stack/` into a new knowledge base, and
   `--devcontainer` copies `.devcontainer/` too. `init` writes the
