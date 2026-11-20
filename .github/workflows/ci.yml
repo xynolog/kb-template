@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  pull_request:
+  merge_group:
+    types: [checks_requested]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dco:
+    uses: xynolog/.github/.github/workflows/dco.yml@189966d08e740aa4e79460c9fce7a85769880193
+
+  gate:
+    name: CI Gate
+    if: always()
+    needs: [dco]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Every required job passed or was skipped
+        env:
+          DCO_RESULT: ${{ needs.dco.result }}
+        run: |
+          echo "DCO: $DCO_RESULT"
+          test "$DCO_RESULT" = success -o "$DCO_RESULT" = skipped
