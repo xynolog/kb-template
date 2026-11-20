@@ -27,3 +27,7 @@ A knowledge base with nothing in it yet, ready to run with the
   xynolog/cli's newest release, checked against its checksums and build
   provenance; `post-start.sh` starts the stack. The codespace reads the
   Anthropic key from the `ANTHROPIC_API_KEY` Codespaces user secret.
+
+## License
+
+Apache-2.0. See [LICENSE](./LICENSE).
